@@ -1,0 +1,43 @@
+name: test-bot
+
+on:
+  pull_request:
+    paths:
+      - "Formula/**"
+      - ".github/workflows/tests.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-bot:
+    strategy:
+      matrix:
+        include:
+          - os: macos-15
+          - os: macos-15-intel
+          - os: ubuntu-24.04
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Homebrew
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Run brew test-bot
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          brew test-bot --only-formulae --tap=${{ github.repository }}
+
+      - name: Upload bottle artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: bottles-${{ matrix.os }}
+          path: "*.bottle.*"
+          retention-days: 7
