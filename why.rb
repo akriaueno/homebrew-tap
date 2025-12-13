@@ -1,10 +1,10 @@
 class Why < Formula
   desc "Why are you in my computer?"
   homepage "https://github.com/akriaueno/why-cli"
-  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.1.tar.gz"
-  sha256 "e7c25f062aca6dd086a712e53ea42e210b582139e11460e949153fad864ea024"
+  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.2.tar.gz"
+  sha256 "18759cb611c6c47720c14d30a287186afa4d5b65399adb31d7b92b544f68ff3f"
   license "MIT"
-  version "0.1.1"
+  version "0.1.2"
 
   depends_on "nim" => :build
 
