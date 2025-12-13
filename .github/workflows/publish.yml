@@ -29,13 +29,6 @@ jobs:
             exit 1
           fi
 
-      - name: Download bottle artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: bottles_*
-          merge-multiple: true
-          path: bottles
-
       - name: Delete existing release assets (re-run safe)
         env:
           GH_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
@@ -61,4 +54,4 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          brew pr-pull --tap=${{ github.repository }} --artifact=./bottles ${{ github.event.pull_request.number }}
+          brew pr-pull --tap=${{ github.repository }} --ignore-missing-artifacts=macos-15,macos-15-intel ${{ github.event.pull_request.number }}
