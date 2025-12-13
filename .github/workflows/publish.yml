@@ -20,10 +20,17 @@ jobs:
       - name: Setup Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
+      - name: Download bottle artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: bottles-*
+          merge-multiple: true
+          path: bottles
+
       - name: Run brew pr-pull
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          brew pr-pull --tap=${{ github.repository }} ${{ github.event.pull_request.number }}
+          brew pr-pull --tap=${{ github.repository }} --bottle-path=./bottles ${{ github.event.pull_request.number }}
