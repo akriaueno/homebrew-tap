@@ -1,14 +1,23 @@
 class Why < Formula
   desc "Show where a command on your system really comes from"
   homepage "https://github.com/akriaueno/why-cli"
-  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.4.tar.gz"
-  sha256 "a2f590ff9e30e55d48c0220cbb6023c89ea1b00738e25264383ceed79180d2dd"
+  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.5.tar.gz"
+  sha256 "7ba3fd7e75c88bfc26325dbcd771872d7008c8f6d4bafa45474ee263ebced87c"
   license "MIT"
 
   depends_on "nim" => :build
 
+  resource "cligen" do
+    url "https://github.com/c-blake/cligen/archive/refs/tags/1.7.0.tar.gz"
+    sha256 "6ba26c5c476a7682dcb05c5029abe7c5659e8e0934a5af7a93d9445e8b504cb1"
+  end
+
   def install
-    system "nimble", "build", "-Y", "-d:release", "--noNimblePath"
+    resource("cligen").stage do
+      (buildpath/"vendor/cligen").install Dir["*"]
+    end
+
+    system "nim", "c", "-d:release", "--path:#{buildpath}/vendor/cligen", "-o:why", "src/why.nim"
     bin.install "why"
   end
 
