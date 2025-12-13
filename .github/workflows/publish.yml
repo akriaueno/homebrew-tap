@@ -23,7 +23,7 @@ jobs:
       - name: Download bottle artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: bottles-*
+          pattern: bottles_*
           merge-multiple: true
           path: bottles
 
