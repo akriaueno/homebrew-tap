@@ -38,6 +38,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: bottles
+          # Unique per runner so multiple artifacts can coexist
+          name: bottles_${{ matrix.os }}
           path: "*.bottle.*"
           retention-days: 7
