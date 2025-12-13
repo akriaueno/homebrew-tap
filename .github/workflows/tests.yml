@@ -33,7 +33,7 @@ jobs:
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          brew test-bot --only-formulae --tap=${{ github.repository }}
+          brew test-bot --only-formulae --skip-dependents --tap=${{ github.repository }}
 
       - name: Upload bottle artifacts
         if: always()
