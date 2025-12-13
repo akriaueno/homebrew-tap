@@ -55,4 +55,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           # tests.yml uploads artifacts as bottles_*; default pattern bottles{,_*} will pick them up
-          brew pr-pull --tap=${{ github.repository }} --workflows=tests.yml ${{ github.event.pull_request.number }}
+          brew pr-pull --tap=${{ github.repository }} --workflows=tests.yml --ignore-missing-artifacts=macos-15,macos-15-intel ${{ github.event.pull_request.number }}
