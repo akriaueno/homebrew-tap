@@ -25,12 +25,17 @@ jobs:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           PULL_REQUEST: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
         run: |
+          VERSION=$(echo "$PR_TITLE" | sed -E 's/^why v?//')
+
+          echo "Detected version from PR: $VERSION"
+
           brew pr-pull \
             --debug \
             --tap=${{ github.repository }} \
             --workflows=tests.yml \
-            --root-url="https://github.com/${{ github.repository }}/releases/download/why-$(brew ruby -e "puts Formula['why'].version")" \
+            --root-url="https://github.com/${{ github.repository }}/releases/download/why-${VERSION}" \
             $PULL_REQUEST
 
       - name: Push bottle commit to main
