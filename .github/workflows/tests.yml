@@ -2,9 +2,6 @@ name: test-bot
 
 on:
   pull_request:
-    paths:
-      - "Formula/**"
-      - ".github/workflows/tests.yml"
   workflow_dispatch:
 
 permissions:
@@ -20,24 +17,30 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Setup Homebrew
+      - name: Set up Homebrew
+        id: set-up-homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Run brew test-bot
-        env:
-          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          brew test-bot --only-formulae --skip-dependents --tap=${{ github.repository }}
+      - name: Cache Homebrew Bundler RubyGems
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.set-up-homebrew.outputs.gems-path }}
+          key: ${{ runner.os }}-rubygems-${{ steps.set-up-homebrew.outputs.gems-hash }}
+          restore-keys: ${{ runner.os }}-rubygems-
 
-      - name: Upload bottle artifacts
+      - name: Run brew test-bot --only-cleanup-before
+        run: brew test-bot --only-cleanup-before
+
+      - name: Run brew test-bot --only-setup
+        run: brew test-bot --only-setup
+
+      - name: Run brew test-bot --only-formulae
+        run: |
+          brew test-bot --only-formulae --tap=${{ github.repository }}
+
+      - name: Upload bottles as artifact
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          # Unique per runner so multiple artifacts can coexist
           name: bottles_${{ matrix.os }}
-          path: "*.bottle.*"
-          retention-days: 7
+          path: '*.bottle.*'
