@@ -4,55 +4,30 @@ on:
   pull_request_target:
     types: [labeled]
 
-permissions:
-  contents: write
-  pull-requests: write
-
 jobs:
   pr-pull:
     if: github.event.label.name == 'pr-pull'
-    runs-on: macos-15
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      pull-requests: write
+      packages: write
 
-      - name: Setup Homebrew
+    steps:
+      - name: Set up Homebrew
         uses: Homebrew/actions/setup-homebrew@master
 
-      - name: Require PAT
-        env:
-          PAT: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        run: |
-          if [ -z "$PAT" ]; then
-            echo "GH_PERSONAL_ACCESS_TOKEN is required (scope: repo) for pr-pull" >&2
-            exit 1
-          fi
+      - name: Setup git user
+        uses: Homebrew/actions/git-user-config@master
 
-      - name: Delete existing release assets (re-run safe)
-        env:
-          GH_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
-        run: |
-          TAG=$(HOMEBREW_NO_AUTO_UPDATE=1 brew ruby -e "puts \"why-\#{Formula['akriaueno/tap/why'].version}\"")
-          if gh release view "$TAG" >/dev/null 2>&1; then
-            ASSETS=$(gh release view "$TAG" --json assets --jq '.assets[].name' | grep '^why--' || true)
-            if [ -n "$ASSETS" ]; then
-              echo "Deleting existing assets from $TAG:"
-              printf '%s\n' "$ASSETS"
-              printf '%s\n' "$ASSETS" | xargs -n1 gh release delete-asset "$TAG" -y
-            else
-              echo "No matching assets to delete."
-            fi
-          else
-            echo "Release $TAG not found; skipping asset cleanup."
-          fi
-
-      - name: Run brew pr-pull
+      - name: Pull bottles
         env:
           HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
           GH_TOKEN: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # tests.yml uploads artifacts as bottles_*; default pattern bottles{,_*} will pick them up
-          brew pr-pull --tap=${{ github.repository }} --workflows=tests.yml ${{ github.event.pull_request.number }}
+          brew pr-pull \
+            --debug \
+            --tap=${{ github.repository }} \
+            --workflows=tests.yml \
+            --root-url="https://github.com/${{ github.repository }}/releases/download/why-$(brew ruby -e "puts Formula['why'].version")" \
+            ${{ github.event.pull_request.number }}
