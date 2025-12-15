@@ -1,8 +1,8 @@
 class Why < Formula
   desc "Show where a command on your system really comes from"
   homepage "https://github.com/akriaueno/why-cli"
-  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.7.tar.gz"
-  sha256 "41806076d162a5bc1954c32fa7862916e4c0353e74d39b9bfc0591e6f38bfd4f"
+  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.8.tar.gz"
+  sha256 "946d27013b80510aec288512b755715e7eef3f7609d30bbf186f1237a66a4882"
   license "MIT"
 
   depends_on "nim" => :build
