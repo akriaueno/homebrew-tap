@@ -5,6 +5,12 @@ class Why < Formula
   sha256 "f71536e76e043e525d6a6f58c5c541f1c6bc4bb93b09c00f88a90e7b4c909c50"
   license "MIT"
 
+  bottle do
+    root_url "https://github.com/akriaueno/homebrew-tap/releases/download/why-0.1.10"
+    sha256 cellar: :any_skip_relocation, arm64_sequoia: "d56d7b55539f633e2a6efe98b36adc5df0b15f8a6309f6f4351b4127caee77cd"
+    sha256 cellar: :any_skip_relocation, x86_64_linux:  "5fd593ba86bb1222d370c47e0d621eb69ce7946d015d03c35d56683584accf43"
+  end
+
   depends_on "nim" => :build
 
   resource "cligen" do
