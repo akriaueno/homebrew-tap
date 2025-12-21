@@ -1,15 +1,9 @@
 class Why < Formula
   desc "Show where a command on your system really comes from"
   homepage "https://github.com/akriaueno/why-cli"
-  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.12.tar.gz"
-  sha256 "c201e6315550f00051bc47e5221ac1b51d8c4459f99f163d51a6bd24a01e7541"
+  url "https://github.com/akriaueno/why-cli/archive/refs/tags/v0.1.13.tar.gz"
+  sha256 "094a6071cd76eb774a3b22d0ab36e79886b5037986906a343b3d15f22513a95c"
   license "MIT"
-
-  bottle do
-    root_url "https://github.com/akriaueno/homebrew-tap/releases/download/why-0.1.12"
-    sha256 cellar: :any_skip_relocation, arm64_sequoia: "0d81ae3e935d6141f0fd28b820acedaa1dbc003c22f684a93090966c95f95cfa"
-    sha256 cellar: :any_skip_relocation, x86_64_linux:  "752650dbe203318cef7d900088a889f4d53f7f0fa59e218dc225a4ff491c50dd"
-  end
 
   depends_on "nim" => :build
 
